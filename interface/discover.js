@@ -41,7 +41,6 @@ function handle(request) {
         }
     }
     response.event.header.name = "Discover.Response";
-    log.debug("Discovery Response: ", JSON.stringify(response));
     return response;
 }
 

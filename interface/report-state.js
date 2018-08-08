@@ -38,13 +38,12 @@ function handle(request, fetch, iotEndPoint) {
     return fetch(`https://${iotEndPoint}:8443/things/${request.directive.endpoint.endpointId}/shadow`, options)
         .then(res => res.json())
         .then(json => {
-            log.debug('result of fetch json ' + json);
-            const shadowState = JSON.parse(json);
+            log.debug('Result of fetch json', JSON.stringify(json));
             response.context = {
                 properties: [{
                     namespace: "Alexa.PowerController",
                     name: "powerState",
-                    value: shadowState.state.reported.powerState,
+                    value: json.state.reported.powerState,
                     timeOfSample: new Date().toISOString(),
                     uncertaintyInMilliseconds: 0
                 }]

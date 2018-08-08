@@ -14,8 +14,9 @@ exports.handler = function (request, context, callback) {
     switch (request.directive.header.namespace) {
         case 'Alexa.Discovery':
             if (request.directive.header.name === 'Discover') {
-                log.debug('Discover request', JSON.stringify(request));
+                log.debug('Discover Request', JSON.stringify(request));
                 const response = discoveryHandler(request);
+                log.debug("Discover Response: ", JSON.stringify(response));
                 callback(null, response);
                 break;
             }

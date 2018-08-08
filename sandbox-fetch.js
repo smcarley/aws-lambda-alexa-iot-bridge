@@ -11,6 +11,14 @@ const options = {
     })
 };
 
+var response;
 fetch('https://a27jfyhyazu8pk.iot.eu-west-1.amazonaws.com:8443/things/summercourt/shadow', options)
-    .then(res => res.json())
-    .then(json => console.log(JSON.stringify(json)));
+    .then(res => {
+        // return res.text()
+        return res.json()
+    })
+    .then(json => {
+        json
+        p = json.state.desired.powerState
+        p
+    });

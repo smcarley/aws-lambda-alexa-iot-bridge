@@ -7,7 +7,9 @@ function loadRequest(request) {
 
 test('valid turnOff request', () => {
   const request = loadRequest('PowerController/PowerController.TurnOff.request');
-  const fakeFetch = jest.fn().mockReturnValue(Promise.resolve({ json: () => JSON.stringify({ response: "OK" }) }));
+  const fakeFetch = jest.fn().mockReturnValue(Promise.resolve({ json: () => {
+    return { response: "OK" };
+  }}));
 
   return handle(request, fakeFetch, "iotEndpoint")
     .then(response => {

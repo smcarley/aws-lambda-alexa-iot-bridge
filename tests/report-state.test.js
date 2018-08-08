@@ -8,7 +8,9 @@ function loadRequest(request) {
 test.only('valid state report', () => {
   const request = loadRequest('StateReport/ReportState');
 
-  const fakeFetch = jest.fn().mockReturnValue(Promise.resolve({ json: () => JSON.stringify({ state: { reported: { powerState: "OFF" }}})}));
+  const fakeFetch = jest.fn().mockReturnValue(Promise.resolve({ json: () => {
+    return { state: { reported: { powerState: "OFF" }}};
+  }}));
 
   return handle(request, fakeFetch, 'iotEndpoint')
     .then(response => {

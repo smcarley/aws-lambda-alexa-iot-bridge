@@ -51,7 +51,7 @@ function handle(request, fetch, iotEndPoint) {
     return fetch(`https://${iotEndPoint}:8443/things/${request.directive.endpoint.endpointId}/shadow`, options)
         .then(res => res.json())
         .then(json => {
-            log.debug("result of fetch" + JSON.stringify(json));
+            log.debug("Result of fetch", JSON.stringify(json));
             return response;
         });
 }

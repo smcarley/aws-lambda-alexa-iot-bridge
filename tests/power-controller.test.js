@@ -7,14 +7,12 @@ function loadRequest(request) {
 
 test('valid turnOff request', () => {
   const request = loadRequest('PowerController/PowerController.TurnOff.request');
-  const fakeFetch = jest.fn().mockReturnValue(Promise.resolve({ json: () => {
-    return { response: "OK" };
-  }}));
+  let fakeIotData = {updateThingShadow: jest.fn((props, callback) => callback(null, 'OK'))}; // callback straightaway
 
-  return powerController.handle(request, fakeFetch, "iotEndpoint")
+  return powerController.handle(request, fakeIotData)
     .then(response => {
-      const powerState = JSON.parse(fakeFetch.mock.calls[0][1].body).state.desired.powerState;
-      expect(powerState).toBe('OFF');
+      expect(fakeIotData.updateThingShadow.mock.calls[0][0].thingName).toBe('endpoint-001');
+      expect(JSON.parse(fakeIotData.updateThingShadow.mock.calls[0][0].payload).state.desired.powerState).toBe('OFF');
       expect(response.event.header.namespace).toBe('Alexa');
       expect(response.event.header.name).toBe('Response');
     })
@@ -22,14 +20,12 @@ test('valid turnOff request', () => {
 
 test('valid turnOn request', () => {
   const request = loadRequest('PowerController/PowerController.TurnOn.request');
-  const fakeFetch = jest.fn().mockReturnValue(Promise.resolve({ json: () => {
-    return { response: "OK" };
-  }}));
+  let fakeIotData = {updateThingShadow: jest.fn((props, callback) => callback(null, 'OK'))}; // callback straightaway
 
-  return powerController.handle(request, fakeFetch, "iotEndpoint")
+  return powerController.handle(request, fakeIotData)
     .then(response => {
-      const powerState = JSON.parse(fakeFetch.mock.calls[0][1].body).state.desired.powerState;
-      expect(powerState).toBe('ON');
+      expect(fakeIotData.updateThingShadow.mock.calls[0][0].thingName).toBe('endpoint-001');
+      expect(JSON.parse(fakeIotData.updateThingShadow.mock.calls[0][0].payload).state.desired.powerState).toBe('ON');
       expect(response.event.header.namespace).toBe('Alexa');
       expect(response.event.header.name).toBe('Response');
     })

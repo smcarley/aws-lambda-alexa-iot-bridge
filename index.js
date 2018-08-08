@@ -12,7 +12,7 @@ exports.handler = function (request, context, callback) {
         case 'Alexa.Discovery':
             if (request.directive.header.name === 'Discover') {
                 log.debug('Discover Request', JSON.stringify(request));
-                const response = discover.handle(request);
+                const response = discover.handle(request, getIot());
                 log.debug("Discover Response: ", JSON.stringify(response));
                 callback(null, response);
                 break;
@@ -62,6 +62,16 @@ exports.handler = function (request, context, callback) {
 function getIotData() {
     const AWS = require('aws-sdk');
     return new AWS.IotData({
+        endpoint: `${process.env.AWS_IOT_ENDPOINT}`,
+        region: `${process.env.REGION}`,
+        accessKeyId: `${process.env.ACCESS_KEY_ID}`,
+        secretAccessKey: `${process.env.SECRET_ACCESS_KEY}`
+    });
+}
+
+function getIot() {
+    const AWS = require('aws-sdk');
+    return new AWS.Iot({
         endpoint: `${process.env.AWS_IOT_ENDPOINT}`,
         region: `${process.env.REGION}`,
         accessKeyId: `${process.env.ACCESS_KEY_ID}`,

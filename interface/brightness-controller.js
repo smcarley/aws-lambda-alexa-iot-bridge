@@ -27,9 +27,9 @@ function constructDesiredState(request) {
             desired: {
                 properties : [
                     {
-                        namespace: 'Alexa.PowerController',
-                        name: 'powerState',
-                        value: request.directive.header.name === "TurnOn" ? "ON" : "OFF",
+                        namespace: 'Alexa.BrightnessController',
+                        name: 'brightness',
+                        value: request.directive.payload.brightness
                     }
                 ]
             }

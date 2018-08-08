@@ -27,9 +27,24 @@ function handle(request) {
                             "supported": [{
                                 "name": "powerState"
                             }],
-                             "retrievable": true
+                          "proactivelyReported": false,
+                          "retrievable": true
                         }
-                    }
+                    },
+                    {
+                        "type": "AlexaInterface",
+                        "interface": "Alexa.BrightnessController",
+                        "version": "3",
+                        "properties": {
+                          "supported": [
+                            {
+                              "name": "brightness"
+                            }
+                          ],
+                          "proactivelyReported": false,
+                          "retrievable": true
+                        }
+                      }
                 ]
             }
         ]

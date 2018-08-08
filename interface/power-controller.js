@@ -22,16 +22,10 @@ function handle(request, fetch, iotEndPoint) {
 module.exports = handle;
 
 function constructDesiredState(request) {
-    return{
+    return {
         state: {
             desired: {
-                properties : [
-                    {
-                        namespace: 'Alexa.PowerController',
-                        name: 'powerState',
-                        value: request.directive.header.name === "TurnOn" ? "ON" : "OFF",
-                    }
-                ]
+                powerState: request.directive.header.name === "TurnOn" ? "ON" : "OFF"
             }
         }
     };

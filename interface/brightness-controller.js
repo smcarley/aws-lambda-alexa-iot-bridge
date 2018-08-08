@@ -22,16 +22,10 @@ function handle(request, fetch, iotEndPoint) {
 module.exports = handle;
 
 function constructDesiredState(request) {
-    return{
+    return {
         state: {
             desired: {
-                properties : [
-                    {
-                        namespace: 'Alexa.BrightnessController',
-                        name: 'brightness',
-                        value: request.directive.payload.brightness
-                    }
-                ]
+                brightness: request.directive.payload.brightness
             }
         }
     };

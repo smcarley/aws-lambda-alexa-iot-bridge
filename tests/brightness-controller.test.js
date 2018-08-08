@@ -13,10 +13,8 @@ test('valid turnOff request', () => {
 
   return handle(request, fakeFetch, "iotEndpoint")
     .then(response => {
-      const stateSent = JSON.parse(fakeFetch.mock.calls[0][1].body).state.desired.properties[0];
-      expect(stateSent.namespace).toBe('Alexa.BrightnessController');
-      expect(stateSent.name).toBe('brightness');
-      expect(stateSent.value).toBe(75);
+      const brightness = JSON.parse(fakeFetch.mock.calls[0][1].body).state.desired.brightness;
+      expect(brightness).toBe(75);
       expect(response.event.header.namespace).toBe('Alexa');
       expect(response.event.header.name).toBe('Response');
     })

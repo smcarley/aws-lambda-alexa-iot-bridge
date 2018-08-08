@@ -1,0 +1,4 @@
+**/?(*.)+(spec|test).js?(x)
+**/*.zip
+tests/**
+sandbox*.js

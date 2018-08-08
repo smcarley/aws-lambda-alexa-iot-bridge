@@ -1,5 +1,5 @@
 const fs = require('fs');
-const handle = require('../interface/power-controller');
+const powerController = require('../interface/power-controller');
 
 function loadRequest(request) {
   return JSON.parse(fs.readFileSync('./tests/examples/' + request + '.json', 'utf-8'));
@@ -11,7 +11,7 @@ test('valid turnOff request', () => {
     return { response: "OK" };
   }}));
 
-  return handle(request, fakeFetch, "iotEndpoint")
+  return powerController.handle(request, fakeFetch, "iotEndpoint")
     .then(response => {
       const powerState = JSON.parse(fakeFetch.mock.calls[0][1].body).state.desired.powerState;
       expect(powerState).toBe('OFF');
@@ -26,7 +26,7 @@ test('valid turnOn request', () => {
     return { response: "OK" };
   }}));
 
-  return handle(request, fakeFetch, "iotEndpoint")
+  return powerController.handle(request, fakeFetch, "iotEndpoint")
     .then(response => {
       const powerState = JSON.parse(fakeFetch.mock.calls[0][1].body).state.desired.powerState;
       expect(powerState).toBe('ON');

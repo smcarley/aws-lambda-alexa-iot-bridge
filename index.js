@@ -1,12 +1,10 @@
 "use strict";
 
 const log = require('./log');
-const discoveryHandler = require('./interface/discover');
-const powerControllerHandler = require('./interface/power-controller');
-const reportStateHandler = require('./interface/report-state');
-
-const AWS = require('aws-sdk');
-const iotData = new AWS.IotData({ endpoint: process.env.AWS_IOT_ENDPOINT });
+const discover = require('./interface/discover');
+const powerController = require('./interface/power-controller');
+const brightnessController = require('./interface/brightness-controller');
+const reportState = require('./interface/report-state');
 const fetch = require('node-fetch');
 
 exports.handler = function (request, context, callback) {
@@ -15,7 +13,7 @@ exports.handler = function (request, context, callback) {
         case 'Alexa.Discovery':
             if (request.directive.header.name === 'Discover') {
                 log.debug('Discover Request', JSON.stringify(request));
-                const response = discoveryHandler(request);
+                const response = discover.handle(request);
                 log.debug("Discover Response: ", JSON.stringify(response));
                 callback(null, response);
                 break;
@@ -27,7 +25,17 @@ exports.handler = function (request, context, callback) {
         case 'Alexa.PowerController':
             if (request.directive.header.name === 'TurnOn' || request.directive.header.name === 'TurnOff') {
                 log.debug('TurnOn or TurnOff Request', JSON.stringify(request));
-                powerControllerHandler(request, fetch, process.env.AWS_IOT_ENDPOINT)
+                powerController.handle(request, fetch, process.env.AWS_IOT_ENDPOINT)
+                    .then(response => {
+                        log.debug('TurnOn or TurnOff Response', JSON.stringify(response));
+                        callback(null, response);
+                    });
+            }
+            break;
+        case 'Alexa.BrightnessController':
+            if (request.directive.header.name === 'AdjustBrightness' || request.directive.header.name === 'SetBrightness') {
+                log.debug('AdjustBrightness or SetBrightness Request', JSON.stringify(request));
+                brightnessController.handle(request, fetch, process.env.AWS_IOT_ENDPOINT)
                     .then(response => {
                         log.debug('TurnOn or TurnOff Response', JSON.stringify(response));
                         callback(null, response);
@@ -37,7 +45,7 @@ exports.handler = function (request, context, callback) {
         case 'Alexa':
             if (request.directive.header.name === 'ReportState') {
                 log.debug("ReportState Request", JSON.stringify(request));
-                reportStateHandler(request, fetch, process.env.AWS_IOT_ENDPOINT)
+                reportState.handle(request, fetch, process.env.AWS_IOT_ENDPOINT)
                     .then(response => {
                         log.debug('ReportState Repsonse', JSON.stringify(response));
                         callback(null, response);
@@ -45,7 +53,7 @@ exports.handler = function (request, context, callback) {
             }
             break;
         default: {
-            const errorMessage = `Request with namespace ${request.header.namespace} not supported`;
+            const errorMessage = `Request with namespace ${request.directive.header.namespace} not supported`;
             log.error(errorMessage);
             callback(new Error(errorMessage));
         }

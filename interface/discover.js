@@ -2,7 +2,7 @@
 
 const log = require('../log');
 
-function handle(request) {
+module.exports.handle = function handle(request) {
     var payload = {
         "endpoints":
         [
@@ -58,5 +58,3 @@ function handle(request) {
     response.event.header.name = "Discover.Response";
     return response;
 }
-
-module.exports = handle;

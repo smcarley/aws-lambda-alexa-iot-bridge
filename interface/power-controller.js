@@ -3,7 +3,7 @@
 const log = require('../log');
 const util = require('../util');
 
-function handle(request, fetch, iotEndPoint) {
+module.exports.handle = function handle(request, fetch, iotEndPoint) {
 
     const options = {
         method: 'POST',
@@ -19,13 +19,12 @@ function handle(request, fetch, iotEndPoint) {
         });
 }
 
-module.exports = handle;
-
 function constructDesiredState(request) {
     return {
         state: {
             desired: {
-                powerState: request.directive.header.name === "TurnOn" ? "ON" : "OFF"
+                powerState: request.directive.header.name === "TurnOn" ? "ON" : "OFF",
+                brightness: request.directive.header.name === "TurnOn" ? 100 : 0
             }
         }
     };

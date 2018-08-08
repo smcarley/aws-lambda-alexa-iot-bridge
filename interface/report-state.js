@@ -4,7 +4,7 @@ const fs = require('fs');
 const https = require('https');
 const log = require('../log');
 
-function handle(request, fetch, iotEndPoint) {
+module.exports.handle = function handle(request, fetch, iotEndPoint) {
     
     const options = {
         method: 'GET',
@@ -26,10 +26,6 @@ function handle(request, fetch, iotEndPoint) {
             }
         });
 };
-
-module.exports = handle;
-
-
 
 function constructErrorResponse(request) {
     return {

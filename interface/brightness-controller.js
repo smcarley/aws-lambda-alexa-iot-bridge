@@ -3,7 +3,7 @@
 const log = require('../log');
 const util = require('../util');
 
-function handle(request, fetch, iotEndPoint) {
+module.exports.handle = function handle(request, fetch, iotEndPoint) {
 
     const options = {
         method: 'POST',
@@ -19,12 +19,11 @@ function handle(request, fetch, iotEndPoint) {
         });
 }
 
-module.exports = handle;
-
 function constructDesiredState(request) {
     return {
         state: {
             desired: {
+                powerState: request.directive.payload.brightness ? 'ON' : 'OFF',
                 brightness: request.directive.payload.brightness
             }
         }

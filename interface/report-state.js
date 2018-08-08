@@ -1,9 +1,10 @@
 "use strict";
 
+const fs = require('fs');
+const https = require('https');
 const log = require('../log');
 
-function handle(request, context, fetch, iotEndPoint) {
-    const endpointId = request.directive.endpoint.endpointId;
+function handle(request, fetch, iotEndPoint) {
     var response = {
         context: {},
         event: {
@@ -24,14 +25,6 @@ function handle(request, context, fetch, iotEndPoint) {
             payload: {}
         }
     };
-    return get(fetch, iotEndPoint, endpointId, response);
-}
-
-module.exports = handle;
-
-function get(fetch, iotEndPoint, thingEndpointId, response) {
-    const fs = require('fs');
-    const https = require('https');
 
     const options = {
         method: 'GET',
@@ -42,15 +35,16 @@ function get(fetch, iotEndPoint, thingEndpointId, response) {
         })
     };
 
-    return fetch(`https://${iotEndPoint}:8443/things/${thingEndpointId}/shadow`, options)
+    return fetch(`https://${iotEndPoint}:8443/things/${request.directive.endpoint.endpointId}/shadow`, options)
         .then(res => res.json())
         .then(json => {
-            log.debug("result of fetch" + JSON.stringify(json));
+            log.debug('result of fetch json ' + json);
+            const shadowState = JSON.parse(json);
             response.context = {
                 properties: [{
                     namespace: "Alexa.PowerController",
                     name: "powerState",
-                    value: json.state.reported.powerState,
+                    value: shadowState.state.reported.powerState,
                     timeOfSample: new Date().toISOString(),
                     uncertaintyInMilliseconds: 0
                 }]
@@ -58,3 +52,5 @@ function get(fetch, iotEndPoint, thingEndpointId, response) {
             return response;
         });
 }
+
+module.exports = handle;

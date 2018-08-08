@@ -2,16 +2,16 @@
 
 const log = require('../log');
 
-function handle(request, context) {
+function handle(request) {
     var payload = {
         "endpoints":
         [
             {
-                "endpointId": "summercourt",
+                "endpointId": "summercourt-test-lights",
                 "manufacturerName": "Summercourt",
-                "friendlyName": "Summercourt",
+                "friendlyName": "test lights",
                 "description": "Summercourt test endpoint",
-                "displayCategories": ["SWITCH"],
+                "displayCategories": ["LIGHT"],
                 "capabilities":
                 [
                     {
@@ -34,10 +34,15 @@ function handle(request, context) {
             }
         ]
     };
-    var header = request.directive.header;
-    header.name = "Discover.Response";
-    log.debug("Discovery Response: ", JSON.stringify({ header: header, payload: payload }));
-    context.succeed({ event: { header: header, payload: payload } });
+    var response = {
+        event: {
+            header : request.directive.header,
+            payload: payload
+        }
+    }
+    response.event.header.name = "Discover.Response";
+    log.debug("Discovery Response: ", JSON.stringify(response));
+    return response;
 }
 
 module.exports = handle;

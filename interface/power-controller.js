@@ -4,12 +4,12 @@ const log = require('../log');
 const util = require('../util');
 
 module.exports.handle = function handle(request, iotData) {
-    
-    return new Promise( (resolve, reject) => {
-        iotData.updateThingShadow({ 
+
+    return new Promise((resolve, reject) => {
+        iotData.updateThingShadow({
             thingName: request.directive.endpoint.endpointId,
             payload: JSON.stringify(constructDesiredState(request))
-        }, function(err, data) {
+        }, function (err, data) {
             if (err) {
                 const reason = `UpdateThingShadow Failure: ${err}`;
                 log.error(reason);
@@ -18,11 +18,12 @@ module.exports.handle = function handle(request, iotData) {
             else {
                 log.debug(`UpdateThingShadow Success`);
                 resolve(constructResponse(request));
-            }   
+            }
         })
     });
 }
 
+/* This will only work for lighting */
 function constructDesiredState(request) {
     return {
         state: {

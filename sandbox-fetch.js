@@ -11,7 +11,7 @@ const options = {
     })
 };
 
-/* get shadow state example
+/* get shadow state example */
 var response;
 fetch('https://a27jfyhyazu8pk.iot.eu-west-1.amazonaws.com:8443/things/summercourt/shadow', options)
     .then(res => {
@@ -23,8 +23,9 @@ fetch('https://a27jfyhyazu8pk.iot.eu-west-1.amazonaws.com:8443/things/summercour
         p = json.state.desired.powerState
         p
     }); 
-*/
 
+
+/*
 var response;
 fetch('https://iot.eu-west-1.amazonaws.com:8443/thing-groups/test-thing-group/things?', options)
     .then(res => {
@@ -34,3 +35,4 @@ fetch('https://iot.eu-west-1.amazonaws.com:8443/thing-groups/test-thing-group/th
     .then(json => {
         console.log(json);
     }); 
+    */

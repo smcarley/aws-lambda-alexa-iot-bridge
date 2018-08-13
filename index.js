@@ -6,15 +6,18 @@ const powerController = require('./interface/power-controller');
 const brightnessController = require('./interface/brightness-controller');
 const reportState = require('./interface/report-state');
 
-exports.handler = function (request, context, callback) {    
+exports.handler = function (request, context, callback) {
 
     switch (request.directive.header.namespace) {
         case 'Alexa.Discovery':
             if (request.directive.header.name === 'Discover') {
                 log.debug('Discover Request', JSON.stringify(request));
-                const response = discover.handle(request, getIot());
-                log.debug("Discover Response: ", JSON.stringify(response));
-                callback(null, response);
+                discover.handle(request, getIot())
+                    .then(response => {
+                        log.debug("Discover Response: ", JSON.stringify(response));
+                        callback(null, response);
+                    });
+                log.debug('After handle');
                 break;
             }
             else {
@@ -62,7 +65,7 @@ exports.handler = function (request, context, callback) {
 function getIotData() {
     const AWS = require('aws-sdk');
     return new AWS.IotData({
-        endpoint: `${process.env.AWS_IOT_ENDPOINT}`,
+        endpoint: `${process.env.AWS_IOTDATA_ENDPOINT}`,
         region: `${process.env.REGION}`,
         accessKeyId: `${process.env.ACCESS_KEY_ID}`,
         secretAccessKey: `${process.env.SECRET_ACCESS_KEY}`

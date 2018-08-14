@@ -2,18 +2,21 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const https = require('https');
 
+const config = JSON.parse(fs.readFileSync('./sandbox/config.json', 'utf-8'));
+
+
 const options = {
     method: 'GET',
     agent: new https.Agent({
-        key: fs.readFileSync('./certs/summercourt.private.key'),
-        cert: fs.readFileSync('./certs/summercourt.cert.pem'),
+        key: fs.readFileSync('./certs/private.key'),
+        cert: fs.readFileSync('./certs/cert.pem'),
         ca: fs.readFileSync('./certs/root-CA.crt')
     })
 };
 
 /* get shadow state example */
 var response;
-fetch('https://a27jfyhyazu8pk.iot.eu-west-1.amazonaws.com:8443/things/summercourt/shadow', options)
+fetch(`https://${config.aws.iotDateEndpoint}/things/${config.aws.thingGroup}/shadow`, options)
     .then(res => {
         // return res.text()
         return res.json()

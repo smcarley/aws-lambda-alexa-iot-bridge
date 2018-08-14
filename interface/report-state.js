@@ -1,7 +1,5 @@
 "use strict";
 
-const fs = require('fs');
-const https = require('https');
 const log = require('../log');
 
 module.exports.handle = async function handle(request, iotData) {

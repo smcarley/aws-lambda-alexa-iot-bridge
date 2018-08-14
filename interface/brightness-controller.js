@@ -1,7 +1,6 @@
 "use strict";
 
 const log = require('../log');
-const util = require('../util');
 
 module.exports.handle = async function handle(request, iotData) {
 

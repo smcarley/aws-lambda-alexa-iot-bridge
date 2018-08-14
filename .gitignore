@@ -20,9 +20,10 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 
-# certs
+# certs and config
 certs
-credentials.txt
+credentials-aws.json
+sandbox/config.json
 
 # nyc test coverage
 .nyc_output

@@ -15,12 +15,12 @@ const fs = require('fs');
 var https = require('https');
 
 var options = {
-    hostname: 'a27jfyhyazu8pk.iot.eu-west-1.amazonaws.com',
+    hostname: 'blibble.iot.eu-west-1.amazonaws.com',
     path: '/things/summercourt/shadow',
     port: 8443,
     method: 'GET',
-    key: fs.readFileSync('./certs/summercourt.private.key'),
-    cert: fs.readFileSync('./certs/summercourt.cert.pem'),
+    key: fs.readFileSync('./certs/private.key'),
+    cert: fs.readFileSync('./certs/cert.pem'),
     ca: fs.readFileSync('./certs/root-CA.crt')
 };
 
@@ -39,12 +39,12 @@ var https = require('https');
 //const requestAync = promisify(https.request);
 
 var options = {
-    hostname: 'a27jfyhyazu8pk.iot.eu-west-1.amazonaws.com',
-    path: '/things/summercourt/shadow',
+    hostname: 'blibble.iot.eu-west-1.amazonaws.com',
+    path: '/things/thingGroup/shadow',
     port: 8443,
     method: 'GET',
-    key: fs.readFileSync('./certs/summercourt.private.key'),
-    cert: fs.readFileSync('./certs/summercourt.cert.pem'),
+    key: fs.readFileSync('./certs/private.key'),
+    cert: fs.readFileSync('./certs/cert.pem'),
     ca: fs.readFileSync('./certs/root-CA.crt')
 };
 

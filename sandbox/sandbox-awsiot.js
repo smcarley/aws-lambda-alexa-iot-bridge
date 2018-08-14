@@ -1,12 +1,10 @@
-var AWS = require('aws-sdk');
+const fs = require('fs');
+const config = JSON.parse(fs.readFileSync('./sandbox/config.json', 'utf-8'));
 
+const AWS = require('aws-sdk');
+AWS.config.loadFromPath('./sandbox/credentials-aws.json');
+var iot = new AWS.Iot({ endpoint: config.aws.endpoint });
 
-// var iot = new AWS.Iot({
-//     endpoint: "https://iot.eu-west-1.amazonaws.com",
-//     region: "eu-west-1",
-//     accessKeyId: "AKIAIRFDRMZEAJ5TKCSQ",
-//     secretAccessKey: "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"
-// });
 
 /* List things
 iot.listThings({}, function(err, data) {
@@ -21,22 +19,13 @@ iot.listThings({}, function(err, data) {
 // });
 
 
-
-var iotData = new AWS.IotData({
-    endpoint: "https://a27jfyhyazu8pk.iot.eu-west-1.amazonaws.com",
-    region: "eu-west-1",
-    accessKeyId: "AKIAJ533DXDPNAMTXCXA",
-    secretAccessKey: "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"
-});
-
-
 /* getThingShadow 
 iotData.getThingShadow({ thingName: 'summercourt-simon_study_lights'}, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
     else     console.log(data);           // successful response
 });*/
 
-iotData.getThingShadow({ thingName: 'summercourt-simon_study_lights'}).promise().then(data => console.log(data));
+iotData.getThingShadow({ thingName: 'thing'}).promise().then(data => console.log(data));
 
 
 /* updateThingShadow with promise

@@ -2,78 +2,78 @@
 
 const log = require('../log');
 
-module.exports.handle = function handle(request, iot) {
-
-    return new Promise((resolve, reject) => {
+module.exports.handle = async function handle(request, iot) {
+    try {
         log.debug('Calling ListThings');
-        iot.listThings({ thingTypeName: 'Lighting' }, function (err, data) {
-            log.debug('ListThings responded');
-            
-            if (err) {
-                const reason = `ListThings Failure: ${err}`;
-                log.error(reason);
-                reject(reason);
-            }
-            else {
-                log.debug(`ListThings Success: ${data.things.length}`)
-                var payload = { "endpoints": [] };
-                data.things.forEach(thing => {
-                    let endpoint = createEndpoint(thing);
-                    payload.endpoints.push(endpoint);
-                });
+        const things = await iot.listThings({ thingTypeName: 'Lighting' }).promise()
+        log.debug('ListThings responded');
+        log.debug(`ListThings Success with ${things.things.length} things`)
+        var payload = { "endpoints": [] };
+        for (const thing of things.things) {
+            let endpoint = createEndpoint(thing);
+            payload.endpoints.push(endpoint);
+        }
 
-                var response = {
-                    event: {
-                        header: request.directive.header,
-                        payload: payload
-                    }
-                }
-                response.event.header.name = "Discover.Response";
-                resolve(response);
+        var response = {
+            event: {
+                header: request.directive.header,
+                payload: payload
             }
-        });
-    });
+        }
+        response.event.header.name = "Discover.Response";
+        return response;
+    } catch (err) { log.error(`ListThings Failure: ${err}`); }
 }
 
 function createEndpoint(thing) {
-    return {
+
+
+    const endpoint = {
         endpointId: thing.thingName,
         manufacturerName: thing.attributes.manufacturerName,
         friendlyName: thing.attributes.friendlyName.split('_').join(' '),
         description: thing.thingName,
-        displayCategories: ['LIGHT'],
+        displayCategories: [], 
         capabilities: [
             {
                 type: "AlexaInterface",
                 interface: "Alexa",
                 version: "3"
-            },
-            {
-                interface: "Alexa.PowerController",
-                version: "3",
-                type: "AlexaInterface",
-                properties: {
-                    supported: [{
-                        name: "powerState"
-                    }],
-                    proactivelyReported: false,
-                    retrievable: true
-                }
-            },
-            {
-                type: "AlexaInterface",
-                interface: "Alexa.BrightnessController",
-                version: "3",
-                properties: {
-                    supported: [
-                        {
-                            name: "brightness"
-                        }
-                    ],
-                    proactivelyReported: false,
-                    retrievable: true
-                }
             }
         ]
     };
+
+    if (thing.attributes.capabilities.includes('brightness')) {
+        endpoint.displayCategories.push('LIGHT');
+        endpoint.capabilities.push({
+            type: "AlexaInterface",
+            interface: "Alexa.BrightnessController",
+            version: "3",
+            properties: {
+                supported: [{
+                    name: "brightness"
+                }],
+                proactivelyReported: false,
+                retrievable: true
+            }
+        })
+    }
+
+    if (thing.attributes.capabilities.includes('powerState')) {
+        endpoint.displayCategories.push('LIGHT');
+        endpoint.capabilities.push({
+            interface: "Alexa.PowerController",
+            version: "3",
+            type: "AlexaInterface",
+            properties: {
+                supported: [{
+                    name: "powerState"
+                }],
+                proactivelyReported: false,
+                retrievable: true
+            }
+        })
+    }
+
+    return endpoint;
 }

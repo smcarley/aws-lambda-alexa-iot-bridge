@@ -6,18 +6,15 @@ const powerController = require('./interface/power-controller');
 const brightnessController = require('./interface/brightness-controller');
 const reportState = require('./interface/report-state');
 
-exports.handler = function (request, context, callback) {
+exports.handler = async function (request, context, callback) {
 
     switch (request.directive.header.namespace) {
         case 'Alexa.Discovery':
             if (request.directive.header.name === 'Discover') {
                 log.debug('Discover Request', JSON.stringify(request));
-                discover.handle(request, getIot())
-                    .then(response => {
-                        log.debug("Discover Response: ", JSON.stringify(response));
-                        callback(null, response);
-                    });
-                log.debug('After handle');
+                const response = await discover.handle(request, getIot());
+                log.debug("Discover Response: ", JSON.stringify(response));
+                callback(null, response);
                 break;
             }
             else {
@@ -27,31 +24,25 @@ exports.handler = function (request, context, callback) {
         case 'Alexa.PowerController':
             if (request.directive.header.name === 'TurnOn' || request.directive.header.name === 'TurnOff') {
                 log.debug('TurnOn or TurnOff Request', JSON.stringify(request));
-                powerController.handle(request, getIotData())
-                    .then(response => {
-                        log.debug('TurnOn or TurnOff Response', JSON.stringify(response));
-                        callback(null, response);
-                    });
+                const response = await powerController.handle(request, getIotData())
+                log.debug('TurnOn or TurnOff Response', JSON.stringify(response));
+                callback(null, response);
             }
             break;
         case 'Alexa.BrightnessController':
             if (request.directive.header.name === 'AdjustBrightness' || request.directive.header.name === 'SetBrightness') {
                 log.debug('AdjustBrightness or SetBrightness Request', JSON.stringify(request));
-                brightnessController.handle(request, getIotData())
-                    .then(response => {
-                        log.debug('TurnOn or TurnOff Response', JSON.stringify(response));
-                        callback(null, response);
-                    });
+                const response = await brightnessController.handle(request, getIotData())
+                log.debug('AdjustBrightness or SetBrightness Response', JSON.stringify(response));
+                callback(null, response);
             }
             break;
         case 'Alexa':
             if (request.directive.header.name === 'ReportState') {
                 log.debug("ReportState Request", JSON.stringify(request));
-                reportState.handle(request, getIotData())
-                    .then(response => {
-                        log.debug('ReportState Repsonse', JSON.stringify(response));
-                        callback(null, response);
-                    });
+                const response = await reportState.handle(request, getIotData())
+                log.debug('ReportState Repsonse', JSON.stringify(response));
+                callback(null, response);
             }
             break;
         default: {

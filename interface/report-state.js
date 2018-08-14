@@ -4,27 +4,16 @@ const fs = require('fs');
 const https = require('https');
 const log = require('../log');
 
-module.exports.handle = function handle(request, fetch, iotEndPoint) {
-    
-    const options = {
-        method: 'GET',
-        agent: new https.Agent({
-            key: fs.readFileSync('./certs/summercourt.private.key'),
-            cert: fs.readFileSync('./certs/summercourt.cert.pem'),
-            ca: fs.readFileSync('./certs/root-CA.crt')
-        })
-    };
+module.exports.handle = async function handle(request, iotData) {
 
-    return fetch(`https://${iotEndPoint}:8443/things/${request.directive.endpoint.endpointId}/shadow`, options)
-        .then(res => res.json())
-        .then(shadowStateJson => {
-            log.debug('Result of fetch json', JSON.stringify(shadowStateJson));
-            if (shadowStateJson.state.reported) {
-                return constructReponse(request, shadowStateJson);
-            } else {
-                return constructErrorResponse(request);
-            }
-        });
+    const shadow = await iotData.getThingShadow({ thingName: request.directive.endpoint.endpointId }).promise();
+    log.debug('Thing Shadow State', JSON.stringify(shadow));
+    const shadowState = JSON.parse(shadow.payload)
+    if (shadowState.state.reported) {
+        return constructReponse(request, shadowState);
+    } else {
+        return constructErrorResponse(request);
+    }
 };
 
 function constructErrorResponse(request) {
@@ -76,5 +65,5 @@ function constructReponse(request, shadowState) {
             },
             payload: {}
         }
-    }; 
+    };
 };
